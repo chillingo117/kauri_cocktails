@@ -445,16 +445,16 @@
     },
     {
       "name": "Old Fashioned",
-      "flavorText": "The Classic",
-      "description": "Spirit-forward with muddled sugar and bitters. Choose your spirit.",
+      "flavorText": "The Strong Classic",
+      "description": "Spirit-forward with a touch of sugar and bitters. Choose your spirit.",
       "path": null,
       "category": "oldFashioned",
       "ingredients": []
     },
     {
       "name": "Mule",
-      "flavorText": "Spicy & Refreshing",
-      "description": "Citrus and ginger beer bring the kick. Choose your spirit.",
+      "flavorText": "Light Gingery Warmth",
+      "description": "Citrus and ginger beer. Choose your spirit.",
       "path": null,
       "category": "gingerBeer",
       "ingredients": []
