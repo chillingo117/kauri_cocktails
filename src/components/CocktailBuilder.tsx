@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CocktailData, BuilderState, CocktailOption, BaseSpirit } from '../types';
-import { ArrowLeft, CheckCircle, Star } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Star, Sparkles } from 'lucide-react';
 
 interface CocktailBuilderProps {
   cocktailData: CocktailData;
@@ -18,6 +18,45 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
 
   const [history, setHistory] = useState<BuilderState[]>([]);
   const [showFinal, setShowFinal] = useState(false);
+  const [isNamedDrink, setIsNamedDrink] = useState(false);
+  const [isMenuSpecial, setIsMenuSpecial] = useState(false);
+  const [showSparkle, setShowSparkle] = useState(false);
+
+  // Check if current path matches a named drink
+  function checkNamedDrink(path: string[]): boolean {
+    return cocktailData.namedDrinks.some(drink =>
+      drink.path.length === path.length &&
+      drink.path.every((step, index) => step === path[index])
+    );
+  }
+
+  // Check if current path matches a menu special item
+  function checkMenuSpecial(path: string[]): boolean {
+    return cocktailData.menuItems.some(item =>
+      item.path &&
+      item.path.length === path.length &&
+      item.path.every((step, index) => step === path[index])
+    );
+  }
+
+  // Update named drink and menu special status when state changes
+  useEffect(() => {
+    if (state) {
+      const isNamed = checkNamedDrink(state.path);
+      const isSpecial = checkMenuSpecial(state.path);
+      setIsNamedDrink(isNamed);
+      setIsMenuSpecial(isSpecial);
+      if (isNamed || isSpecial) {
+        setShowSparkle(true);
+        const timer = setTimeout(() => setShowSparkle(false), isSpecial ? 3000 : 2000);
+        return () => clearTimeout(timer);
+      }
+    } else {
+      setIsNamedDrink(false);
+      setIsMenuSpecial(false);
+      setShowSparkle(false);
+    }
+  }, [state, cocktailData.namedDrinks, cocktailData.menuItems]);
 
   function navigateToPath(path: string[]): BuilderState | null {
     const spiritKey = path[0];
@@ -142,9 +181,32 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
             </div>
 
             <div className="bg-slate-900 rounded-lg p-6 mb-6">
-              <h3 className="text-3xl font-bold text-amber-500 mb-4 text-center">
-                {state.currentName}
-              </h3>
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <h3 className={`text-3xl font-bold text-center ${
+                  isMenuSpecial ? 'text-purple-400' : 'text-amber-500'
+                }`}>
+                  {state.currentName}
+                </h3>
+                {(isNamedDrink || isMenuSpecial) && (
+                  <div className="relative">
+                    <Sparkles className={`w-6 h-6 animate-pulse ${
+                      isMenuSpecial ? 'text-purple-400 fill-purple-400' : 'text-amber-500 fill-amber-500'
+                    }`} />
+                    {isMenuSpecial && (
+                      <Star className="w-3 h-3 text-purple-300 fill-purple-300 absolute -top-1 -right-1 animate-ping" />
+                    )}
+                  </div>
+                )}
+              </div>
+              {isMenuSpecial ? (
+                <p className="text-purple-400 text-sm text-center mb-4 italic font-semibold">
+                  ⭐ House Special Cocktail ⭐
+                </p>
+              ) : isNamedDrink ? (
+                <p className="text-amber-400 text-sm text-center mb-4 italic">
+                  ✨ Classic Cocktail
+                </p>
+              ) : null}
 
               <div className="mb-6">
                 <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2">
@@ -214,10 +276,51 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
         </div>
 
         {state && (
-          <div className="bg-slate-800 rounded-lg p-6 mb-8 border border-slate-700">
-            <h2 className="text-3xl font-bold text-amber-500 mb-4">
-              {state.currentName}
-            </h2>
+          <div className={`bg-slate-800 rounded-lg p-6 mb-8 border transition-all duration-500 ${
+            isMenuSpecial
+              ? 'border-purple-500 shadow-2xl shadow-purple-500/60 ring-2 ring-purple-400/30'
+              : isNamedDrink
+                ? 'border-amber-500 shadow-lg shadow-amber-500/50'
+                : 'border-slate-700'
+          }`}>
+            <div className="flex items-center gap-3 mb-4">
+              <h2 className={`text-3xl font-bold transition-all duration-500 ${
+                isMenuSpecial ? 'text-purple-400' : 'text-amber-500'
+              } ${showSparkle ? 'animate-pulse' : ''}`}>
+                {state.currentName}
+              </h2>
+              {(isNamedDrink || isMenuSpecial) && (
+                <div className={`relative transition-all duration-500 ${
+                  showSparkle ? 'scale-100 opacity-100' : 'scale-75 opacity-50'
+                }`}>
+                  <Sparkles className={`w-6 h-6 ${
+                    isMenuSpecial ? 'text-purple-400 fill-purple-400' : 'text-amber-500 fill-amber-500'
+                  }`} />
+                  {isMenuSpecial && showSparkle && (
+                    <>
+                      <Star className="w-4 h-4 text-purple-300 fill-purple-300 absolute -top-1 -right-1 animate-ping" />
+                      <Star className="w-3 h-3 text-purple-200 fill-purple-200 absolute -bottom-1 -left-1 animate-bounce" />
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+            {isMenuSpecial ? (
+              <div className={`mb-4 transition-all duration-500 ${
+                showSparkle ? 'animate-bounce' : ''
+              }`}>
+                <p className="text-purple-400 text-sm italic font-semibold">
+                  ⭐ You've created a House Special! ⭐
+                </p>
+                <p className="text-purple-300 text-xs mt-1">
+                  This signature cocktail is featured on our menu
+                </p>
+              </div>
+            ) : isNamedDrink ? (
+              <p className="text-amber-400 text-sm mb-4 italic">
+                ✨ You've created a named cocktail!
+              </p>
+            ) : null}
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
@@ -291,7 +394,11 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
                           )}
                         </div>
                         {option.description && (
-                          <p className="text-slate-400 text-sm">{option.description}</p>
+                          <p className="text-slate-400 text-sm">
+                            {option.description}
+                            {option.drinkName && ` → ${option.drinkName}`}
+                            {option.isSpecial && ' ★'}
+                          </p>
                         )}
                       </div>
                       {option.price > 0 && (

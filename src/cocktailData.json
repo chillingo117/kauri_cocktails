@@ -2,133 +2,136 @@
   "baseSpirits": {
     "gin": {
       "name": "Gin",
-      "price": 8,
-      "ingredients": ["Gin"],
+      "price": 5,
+      "ingredients": ["2. Gin"],
       "options": {
-        "rocks": {
-          "name": "on the rocks",
+        "sugarCitrus": {
+          "name": "Begin a cocktail",
+          "description": "A balanced base to start a cocktail",
           "price": 0,
-          "ingredients": ["Ice"],
-          "finalDrink": "Gin on the Rocks",
-          "terminal": true
-        },
-        "mixer": {
-          "name": "Top with mixer",
-          "price": 2,
-          "ingredients": ["Mixer"],
-          "finalDrink": "Gin and Mixer",
-          "terminal": true
-        },
-        "cocktail": {
-          "name": "make a cocktail",
-          "price": 0,
-          "ingredients": [],
+          "ingredients": ["Sugar", "Lemon"],
+          "drinkName": "Gimlet",
           "options": {
-            "sugarCitrus": {
-              "name": "add sugar and citrus",
-              "description": "A sweet and sour balance",
-              "price": 3,
-              "ingredients": ["Simple Syrup", "Lime Juice"],
-              "drinkName": "Gimlet",
+            "moreCitrus": {
+              "name": "Add more citrus",
+              "description": "Make it tangy",
+              "price": 0,
+              "ingredients": ["Lemon Juice"],
+              "drinkName": "Gin Sour",
               "options": {
-                "moreCitrus": {
-                  "name": "add more citrus",
-                  "description": "Extra tangy and refreshing → Gin Sour",
-                  "price": 1,
-                  "ingredients": ["Lemon Juice"],
+                "Foam and Bitters": {
+                  "name": "Foam and Bitters",
+                  "description": "Egg white foam for a silky smooth top, garnished with bitters for added aroma",
+                  "price": 0.6,
+                  "ingredients": ["Egg White Foam", "Bitters"],
                   "drinkName": "Gin Sour",
-                  "terminal": true
-                },
-                "liqueur": {
-                  "name": "add liqueur",
-                  "description": "Add a fruity or floral note",
-                  "price": 2,
-                  "ingredients": [],
-                  "options": {
-                    "midori": {
-                      "name": "midori",
-                      "description": "Melon liqueur for sweetness → Japanese Slipper",
-                      "price": 0,
-                      "ingredients": ["Midori"],
-                      "drinkName": "Japanese Slipper",
-                      "terminal": true
-                    },
-                    "violette": {
-                      "name": "violette",
-                      "description": "Floral violet liqueur → Blue Moon ★",
-                      "price": 0,
-                      "ingredients": ["Crème de Violette"],
-                      "drinkName": "Blue Moon",
-                      "isSpecial": true,
-                      "options": {
-                        "special": {
-                          "name": "Make it Special",
-                          "description": "Adds beautiful floral garnish ★",
-                          "price": 3,
-                          "ingredients": ["Edible Flowers"],
-                          "drinkName": "Blue Moon Special",
-                          "isSpecial": true,
-                          "terminal": true
-                        }
-                      }
-                    }
-                  }
-                },
-                "honey": {
-                  "name": "replace sugar with honey",
-                  "description": "Rich and smooth honey sweetness → Bees Knees",
-                  "price": 1,
-                  "ingredients": ["Honey Syrup"],
-                  "drinkName": "Bees Knees",
                   "terminal": true
                 }
               }
             },
-            "gingerBeer": {
-              "name": "add citrus and ginger beer",
-              "description": "Spicy and refreshing → Gin Mule",
-              "price": 4,
-              "ingredients": ["Lime Juice", "Ginger Beer"],
-              "drinkName": "Gin Mule",
-              "terminal": true
+            "liqueur": {
+              "name": "Add liqueur",
+              "description": "Add a li'l special something",
+              "price": 0,
+              "ingredients": [],
+              "options": {
+                "midori": {
+                  "name": "Melons",
+                  "description": "Add Midori for a touch of melon",
+                  "price": 1,
+                  "ingredients": ["Midori"],
+                  "drinkName": "Japanese Slipper",
+                  "terminal": true,
+                  "isSpecial": true
+                },
+                "violette": {
+                  "name": "Violets and Roses",
+                  "description": "Add Crème de Violette for rosewater and violets, garnished with dried flowers",
+                  "price": 1.5,
+                  "ingredients": ["Crème de Violette"],
+                  "drinkName": "Blue Moon",
+                  "isSpecial": true,
+                  "terminal": true
+                },
+                "mure": {
+                  "name": "Blackberries",
+                  "description": "Add Crème de Mure for a hit of blackberry",
+                  "price": 1.5,
+                  "ingredients": ["Crème de mure"],
+                  "drinkName": "Bramble",
+                  "isSpecial": true,
+                  "terminal": true
+                }
+              }
+            },
+            "honey": {
+              "name": "Replace sugar with honey",
+              "description": "Rich and smooth honey sweetness",
+              "price": 0.5,
+              "ingredients": ["Honey Syrup"],
+              "drinkName": "Bees Knees",
+              "terminal": true,
+              "isSpecial": true
             }
           }
+        },
+        "gingerBeer": {
+          "name": "Add citrus and ginger beer",
+          "description": "Spicy and refreshing",
+          "price": 1.5,
+          "ingredients": ["Lime", "Ginger Beer"],
+          "drinkName": "Gin-Gin Mule",
+          "terminal": true
         }
       }
     },
     "rum": {
       "name": "Rum",
-      "price": 8,
+      "price": 5,
       "ingredients": ["Rum"],
       "options": {
-        "rocks": {
-          "name": "on the rocks",
+        "sugarCitrus": {
+          "name": "Begin a cocktail",
+          "description": "A balanced base to start a cocktail",
           "price": 0,
-          "ingredients": ["Ice"],
-          "finalDrink": "Rum on the Rocks",
-          "terminal": true
-        },
-        "mixer": {
-          "name": "Top with mixer",
-          "price": 2,
-          "ingredients": ["Cola"],
-          "finalDrink": "Rum and Coke",
-          "terminal": true
-        },
-        "cocktail": {
-          "name": "make a cocktail",
-          "price": 0,
-          "ingredients": [],
+          "ingredients": ["Sugar", "Lime"],
+          "drinkName": "Daiquiri",
           "options": {
-            "sugarCitrus": {
-              "name": "add sugar and citrus",
-              "description": "Classic Cuban refreshment",
-              "price": 3,
-              "ingredients": ["Simple Syrup", "Lime Juice"],
-              "drinkName": "Daiquiri",
-              "terminal": true
+            "liqueur": {
+              "name": "Add liqueur",
+              "description": "Add a li'l special something",
+              "price": 0,
+              "ingredients": [],
+              "options": {
+                "cointreau": {
+                  "name": "Orange liqueur",
+                  "description": "Add Cointreau for orange citrus notes",
+                  "price": 1.5,
+                  "ingredients": ["Cointreau"],
+                  "drinkName": "Rum Sidecar",
+                  "terminal": true,
+                  "isSpecial": true
+                },
+                "maraschino": {
+                  "name": "Maraschino",
+                  "description": "Add Maraschino liqueur for cherry sweetness",
+                  "price": 1.5,
+                  "ingredients": ["Maraschino Liqueur"],
+                  "drinkName": "Hemingway Daiquiri",
+                  "isSpecial": true,
+                  "terminal": true
+                }
+              }
             }
           }
+        },
+        "gingerBeer": {
+          "name": "Add citrus and ginger beer",
+          "description": "Spicy and refreshing",
+          "price": 1.5,
+          "ingredients": ["Lime", "Ginger Beer"],
+          "drinkName": "Dark 'n' Stormy",
+          "terminal": true
         }
       }
     },
@@ -137,18 +140,47 @@
       "price": 10,
       "ingredients": ["Whiskey"],
       "options": {
-        "rocks": {
-          "name": "on the rocks",
+        "sugarCitrus": {
+          "name": "Begin a cocktail",
+          "description": "A balanced base to start a cocktail",
           "price": 0,
-          "ingredients": ["Ice"],
-          "finalDrink": "Whiskey on the Rocks",
-          "terminal": true
+          "ingredients": ["Sugar", "Lemon"],
+          "drinkName": "Whiskey Sour",
+          "options": {
+            "liqueur": {
+              "name": "Add liqueur",
+              "description": "Add a li'l special something",
+              "price": 0,
+              "ingredients": [],
+              "options": {
+                "amaretto": {
+                  "name": "Amaretto",
+                  "description": "Add Amaretto for almond sweetness",
+                  "price": 1.5,
+                  "ingredients": ["Amaretto"],
+                  "drinkName": "Amaretto Sour",
+                  "terminal": true,
+                  "isSpecial": true
+                },
+                "cointreau": {
+                  "name": "Orange liqueur",
+                  "description": "Add Cointreau for orange citrus notes",
+                  "price": 1.5,
+                  "ingredients": ["Cointreau"],
+                  "drinkName": "Whiskey Sidecar",
+                  "isSpecial": true,
+                  "terminal": true
+                }
+              }
+            }
+          }
         },
-        "mixer": {
-          "name": "Top with mixer",
-          "price": 2,
-          "ingredients": ["Ginger Ale"],
-          "finalDrink": "Whiskey and Ginger",
+        "gingerBeer": {
+          "name": "Add citrus and ginger beer",
+          "description": "Spicy and refreshing",
+          "price": 1.5,
+          "ingredients": ["Lime", "Ginger Beer"],
+          "drinkName": "Whiskey Mule",
           "terminal": true
         }
       }
@@ -158,89 +190,199 @@
       "price": 8,
       "ingredients": ["Vodka"],
       "options": {
-        "rocks": {
-          "name": "on the rocks",
+        "sugarCitrus": {
+          "name": "Begin a cocktail",
+          "description": "A balanced base to start a cocktail",
           "price": 0,
-          "ingredients": ["Ice"],
-          "finalDrink": "Vodka on the Rocks",
-          "terminal": true
-        },
-        "mixer": {
-          "name": "Top with mixer",
-          "price": 2,
-          "ingredients": ["Tonic Water"],
-          "finalDrink": "Vodka Tonic",
-          "terminal": true
-        },
-        "cocktail": {
-          "name": "make a cocktail",
-          "price": 0,
-          "ingredients": [],
+          "ingredients": ["Sugar", "Lime"],
+          "drinkName": "Vodka Gimlet",
           "options": {
-            "espresso": {
-              "name": "add espresso and coffee liqueur",
-              "description": "Rich, bold, and caffeinated → Espresso Martini ★",
-              "price": 4,
-              "ingredients": ["Espresso", "Coffee Liqueur", "Simple Syrup"],
-              "drinkName": "Espresso Martini",
-              "isSpecial": true,
-              "terminal": true
-            },
-            "coffeeLiqueur": {
-              "name": "add coffee liqueur and cream",
-              "description": "Smooth and creamy coffee drink",
-              "price": 4,
-              "ingredients": ["Coffee Liqueur", "Cream"],
-              "drinkName": "Black Russian",
-              "terminal": true
+            "liqueur": {
+              "name": "Add liqueur",
+              "description": "Add a li'l special something",
+              "price": 0,
+              "ingredients": [],
+              "options": {
+                "cointreau": {
+                  "name": "Orange liqueur",
+                  "description": "Add Cointreau for orange citrus notes",
+                  "price": 1.5,
+                  "ingredients": ["Cointreau"],
+                  "drinkName": "Kamikaze",
+                  "terminal": true,
+                  "isSpecial": true
+                },
+                "cranberry": {
+                  "name": "Cranberry liqueur",
+                  "description": "Add cranberry for a tart, fruity twist",
+                  "price": 1.5,
+                  "ingredients": ["Cranberry Juice", "Cointreau"],
+                  "drinkName": "Cosmopolitan",
+                  "isSpecial": true,
+                  "terminal": true
+                }
+              }
             }
           }
+        },
+        "gingerBeer": {
+          "name": "Add citrus and ginger beer",
+          "description": "Spicy and refreshing",
+          "price": 1.5,
+          "ingredients": ["Lime", "Ginger Beer"],
+          "drinkName": "Moscow Mule",
+          "terminal": true
+        },
+        "espresso": {
+          "name": "add espresso and coffee liqueur",
+          "description": "Rich, bold, and caffeinated",
+          "price": 4,
+          "ingredients": ["Espresso", "Coffee Liqueur", "Sugar"],
+          "drinkName": "Espresso Martini",
+          "isSpecial": true,
+          "terminal": true
+        },
+        "coffeeLiqueur": {
+          "name": "add coffee liqueur and cream",
+          "description": "Smooth and creamy coffee drink",
+          "price": 4,
+          "ingredients": ["Coffee Liqueur", "Cream"],
+          "drinkName": "Black Russian",
+          "terminal": true
         }
       }
     }
   },
-  "menuItems": [
+  "namedDrinks": [
     {
-      "name": "Bees Knees",
-      "description": "Gin, honey, and lemon",
-      "price": 12,
-      "path": ["gin", "cocktail", "sugarCitrus", "honey"]
+      "name": "Gimlet",
+      "path": ["gin", "sugarCitrus"]
     },
     {
-      "name": "Blue Moon",
-      "description": "Gin, violette, and citrus",
-      "price": 13,
-      "path": ["gin", "cocktail", "sugarCitrus", "liqueur", "violette"]
-    },
-    {
-      "name": "Bramble",
-      "description": "Gin, blackberry liqueur, and lemon",
-      "price": 13,
-      "path": null
-    },
-    {
-      "name": "Daiquiri",
-      "description": "Rum, lime, and sugar",
-      "price": 11,
-      "path": ["rum", "cocktail", "sugarCitrus"]
-    },
-    {
-      "name": "Espresso Martini",
-      "description": "Vodka, espresso, and coffee liqueur",
-      "price": 14,
-      "path": ["vodka", "cocktail", "espresso"]
-    },
-    {
-      "name": "Black Russian",
-      "description": "Vodka, coffee liqueur, and cream",
-      "price": 13,
-      "path": ["vodka", "cocktail", "coffeeLiqueur"]
+      "name": "Gin-Gin Mule",
+      "path": ["gin", "gingerBeer"]
     },
     {
       "name": "Japanese Slipper",
-      "description": "Gin, midori, and citrus",
+      "path": ["gin", "sugarCitrus", "liqueur", "midori"]
+    },
+    {
+      "name": "Blue Moon",
+      "path": ["gin", "sugarCitrus", "liqueur", "violette"]
+    },
+    {
+      "name": "Bramble",
+      "path": ["gin", "sugarCitrus", "liqueur", "mure"]
+    },
+    {
+      "name": "Bees Knees",
+      "path": ["gin", "sugarCitrus", "honey"]
+    },
+    {
+      "name": "Daiquiri",
+      "path": ["rum", "sugarCitrus"]
+    },
+    {
+      "name": "Dark 'n' Stormy",
+      "path": ["rum", "gingerBeer"]
+    },
+    {
+      "name": "Rum Sidecar",
+      "path": ["rum", "sugarCitrus", "liqueur", "cointreau"]
+    },
+    {
+      "name": "Hemingway Daiquiri",
+      "path": ["rum", "sugarCitrus", "liqueur", "maraschino"]
+    },
+    {
+      "name": "Whiskey Sour",
+      "path": ["whiskey", "sugarCitrus"]
+    },
+    {
+      "name": "Whiskey Mule",
+      "path": ["whiskey", "gingerBeer"]
+    },
+    {
+      "name": "Amaretto Sour",
+      "path": ["whiskey", "sugarCitrus", "liqueur", "amaretto"]
+    },
+    {
+      "name": "Whiskey Sidecar",
+      "path": ["whiskey", "sugarCitrus", "liqueur", "cointreau"]
+    },
+    {
+      "name": "Vodka Gimlet",
+      "path": ["vodka", "sugarCitrus"]
+    },
+    {
+      "name": "Moscow Mule",
+      "path": ["vodka", "gingerBeer"]
+    },
+    {
+      "name": "Kamikaze",
+      "path": ["vodka", "sugarCitrus", "liqueur", "cointreau"]
+    },
+    {
+      "name": "Cosmopolitan",
+      "path": ["vodka", "sugarCitrus", "liqueur", "cranberry"]
+    },
+    {
+      "name": "Espresso Martini",
+      "path": ["vodka", "espresso"]
+    },
+    {
+      "name": "Black Russian",
+      "path": ["vodka", "coffeeLiqueur"]
+    }
+  ],
+  "menuItems": [
+    {
+      "name": "Bees Knees",
+      "flavorText": "~You Like Jazz?~",
+      "description": "The light and tangy Gimlet base lets the honey shine through.",
+      "price": 5.5,
+      "path": ["gin", "sugarCitrus", "honey"],
+      "ingredients": ["2. Gin", "1. Lemon", "1/2. Honey Syrup"]
+    },
+    {
+      "name": "Blue Moon",
+      "flavorText": "The House Special",
+      "description": "Delicate, and aromatic with violet floral notes. Garnished with dried flowers.",
+      "price": 6.5,
+      "path": ["gin", "sugarCitrus", "liqueur", "violette"],
+      "ingredients": ["2. Gin", "1/2. Sugar", "1/2 Lemon", "1/2. Crème de Violette"]
+    },
+    {
+      "name": "Bramble",
+      "flavorText": "A Different Kind of Sweet",
+      "description": "Sweet and tart with a vibrant berry finish.",
+      "price": 13,
+      "path": ["gin", "sugarCitrus", "liqueur", "mure"],
+      "ingredients": ["2. Gin", "1. Lemon", "1/2. Sugar", "1/2. Blackberry Liqueur"]
+    },
+    {
+      "name": "Espresso Martini",
+      "flavorText": "The Real 'Shaken not Stirred'",
+      "description": "Rich, bold, and velvety with intense coffee flavor balanced by sweet liqueur. Creamy foam top with a bittersweet coffee punch and smooth vodka warmth.",
       "price": 14,
-      "path": ["gin", "cocktail", "sugarCitrus", "liqueur", "midori"]
+      "path": ["vodka", "espresso"],
+      "ingredients": ["2. Vodka", "2. Espresso", "1. Coffee Liqueur", "1/2. Sugar"]
+    },
+    {
+      "name": "Black Russian",
+      "flavorText": "Cold War Classic",
+      "description": "Decadent and smooth with deep coffee richness softened by cream. Sweet, dessert-like with roasted coffee notes and a luxuriously creamy texture.",
+      "price": 13,
+      "path": ["vodka", "coffeeLiqueur"],
+      "ingredients": ["Vodka", "Coffee Liqueur", "Cream"]
+    },
+    {
+      "name": "Japanese Slipper",
+      "flavorText": "Tokyo Nights",
+      "description": "Vibrant and sweet with tropical melon flavor tempered by sharp citrus. Refreshing and fruity with a smooth, candy-like sweetness and tart finish.",
+      "price": 14,
+      "path": ["gin", "sugarCitrus", "liqueur", "midori"],
+      "ingredients": ["Gin", "Sugar", "Lime", "Midori"]
     }
   ]
 }

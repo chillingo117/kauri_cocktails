@@ -19,13 +19,21 @@ export interface BaseSpirit {
 
 export interface MenuItem {
   name: string;
+  flavorText: string;
   description: string;
   price: number;
   path: string[] | null;
+  ingredients: string[];
+}
+
+export interface NamedDrink {
+  name: string;
+  path: string[];
 }
 
 export interface CocktailData {
   baseSpirits: Record<string, BaseSpirit>;
+  namedDrinks: NamedDrink[];
   menuItems: MenuItem[];
 }
 
