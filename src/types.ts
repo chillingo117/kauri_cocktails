@@ -1,27 +1,28 @@
 export interface CocktailOption {
   name: string;
   description?: string;
-  price: number;
   ingredients: string[];
   drinkName?: string;
   finalDrink?: string;
-  terminal?: boolean;
   isSpecial?: boolean;
+  knownName?: boolean;
+  specialDrink?: boolean;
   options?: Record<string, CocktailOption>;
 }
 
 export interface BaseSpirit {
   name: string;
-  price: number;
   ingredients: string[];
   options: Record<string, CocktailOption>;
 }
 
 export interface MenuItem {
   name: string;
+  flavorText: string;
   description: string;
-  price: number;
   path: string[] | null;
+  category?: string;
+  ingredients: string[];
 }
 
 export interface CocktailData {
@@ -34,5 +35,4 @@ export interface BuilderState {
   path: string[];
   currentName: string;
   ingredients: string[];
-  totalPrice: number;
 }
