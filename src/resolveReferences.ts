@@ -76,6 +76,7 @@ export function resolveReferences(data: JsonObject): JsonObject {
       // Handle _drinkNameTemplate for mixer options
       if (refObj._drinkNameTemplate && typeof referencedObj === 'object') {
         const template = refObj._drinkNameTemplate;
+        const { _ref: _, _drinkNameTemplate: __, ...overrides } = refObj;
         const resolvedMixers: JsonObject = {};
 
         // Iterate through each mixer option
@@ -85,14 +86,22 @@ export function resolveReferences(data: JsonObject): JsonObject {
             // Generate drink name from template
             const mixerName = mixerKey.charAt(0).toUpperCase() + mixerKey.slice(1);
             mixerObj.drinkName = template.replace('{mixer}', mixerName);
+
+            // Apply any overrides for this specific mixer
+            const mixerOverride = (overrides as JsonObject)[mixerKey];
+            if (mixerOverride && typeof mixerOverride === 'object' && !Array.isArray(mixerOverride)) {
+              Object.assign(mixerObj, mixerOverride);
+              // Remove this override so it doesn't get added to the final result
+              delete (overrides as JsonObject)[mixerKey];
+            }
+
             resolvedMixers[mixerKey] = resolve(mixerObj, context);
           } else {
             resolvedMixers[mixerKey] = mixerValue;
           }
         }
 
-        // Merge with any other properties (excluding _ref and _drinkNameTemplate)
-        const { _ref: _, _drinkNameTemplate: __, ...overrides } = refObj;
+        // Merge with any remaining properties (non-mixer overrides)
         return {
           ...resolvedMixers,
           ...resolve(overrides as JsonObject, context)

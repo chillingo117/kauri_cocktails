@@ -4,7 +4,11 @@ Your cocktail data has been refactored to be more maintainable! This guide expla
 
 ## What Changed?
 
-The `cocktailData.json` file now uses **references** to avoid repetition. Common options are defined once at the top and referenced throughout.
+The `cocktailData.json` file now uses:
+1. **References** to avoid repetition - common options are defined once at the top and referenced throughout
+2. **Self-contained drink metadata** - each drink now has `knownName` and `specialDrink` booleans directly in the data
+3. **No separate arrays** - the `namedDrinks` array has been removed; the UI can determine if a drink is named by checking the `knownName` property directly
+4. **Overridable metadata** - properties like `knownName` can be overridden per spirit (e.g., "Gin & Tonic" is known, but "Rum & Tonic" is not)
 
 ## File Structure
 
@@ -25,9 +29,22 @@ The `cocktailData.json` file now uses **references** to avoid repetition. Common
   },
   "baseSpirits": {
     "gin": { /* uses _ref to reference common options */ }
-  }
+  },
+  "menuItems": [ /* featured drinks with full details */ ]
 }
 ```
+
+## Drink Metadata
+
+Each drink option now includes metadata flags:
+
+- **`drinkName`** (string, required): The name of the cocktail (e.g., "Gimlet", "Gin & Tonic")
+- **`knownName`** (boolean, defaults to `false`): `true` if this is a well-known, classic cocktail name; `false` for made-up or generic names
+- **`specialDrink`** (boolean, optional): `true` if this drink should be featured on the menu
+
+**Note**: Since `knownName` defaults to `false`, you only need to specify it when it's `true`.
+
+The UI determines if a drink is complete (has no more options) by checking if the `options` property is empty or undefined.
 
 ## How References Work
 
@@ -38,9 +55,7 @@ Instead of copying the same option 4 times, you use `_ref`:
 "foamBitters": {
   "name": "Foam and Bitters",
   "description": "Egg white foam...",
-  "price": 0.6,
-  "ingredients": ["Egg White Foam", "Bitters"],
-  "terminal": true
+  "ingredients": ["Egg White Foam", "Bitters"]
 }
 ```
 Repeated in gin, rum, whiskey, vodka = 4 places to update!
@@ -52,31 +67,56 @@ Repeated in gin, rum, whiskey, vodka = 4 places to update!
   "foamBitters": {
     "name": "Foam and Bitters",
     "description": "Egg white foam...",
-    "price": 0.6,
-    "ingredients": ["Egg White Foam", "Bitters"],
-    "terminal": true
+    "ingredients": ["Egg White Foam", "Bitters"]
   }
 }
 
 // Reference everywhere with overrides
 "foamBitters": {
   "_ref": "commonOptions.foamBitters",
-  "drinkName": "Gimlet"  // Override just the drink name
+  "drinkName": "Gimlet",  // Override the drink name
+  "knownName": true       // Add metadata
 }
 ```
 
-## Making Changes
-
-### ✅ Change a Price
-**Change in ONE place, affects everywhere:**
+### Example with All Metadata:
 ```json
-"commonOptions": {
-  "sodaWater": {
-    "price": 0.5  // Change from 0.5 to 0.75
+"sugarCitrus": {
+  "name": "Begin a cocktail",
+  "description": "A balanced base to start a cocktail",
+  "ingredients": ["1/2. Sugar Syrup", "3/4. Lemon"],
+  "drinkName": "Gimlet",
+  "knownName": true,      // This is a famous cocktail
+  "options": { /* ... */ }  // Has more options, not complete yet
+}
+```
+
+### Example with Overridable Mixer Metadata:
+```json
+"mixer": {
+  "name": "Top with mixer",
+  "description": "Simple and refreshing",
+  "ingredients": [],
+  "options": {
+    "_ref": "commonOptions.mixers",
+    "_drinkNameTemplate": "Gin & {mixer}",
+    "tonic": {
+      "knownName": true    // "Gin & Tonic" is a known drink
+    }
+    // coke, lemonade, soda inherit knownName: false (default)
   }
 }
 ```
-This automatically updates: Tom Collins, Rum Collins, Whiskey Collins, Vodka Collins, and all Collins variations!
+
+This allows different spirits to have different `knownName` values for the same mixer. For example:
+- **Gin**: Only tonic is known → "Gin & Tonic" (`true`)
+- **Rum**: Only coke is known → "Rum & Coke" (`true`)
+- **Whiskey**: Only coke is known → "Whiskey & Coke" (`true`)
+- **Vodka**: Both tonic and coke are known → "Vodka & Tonic" and "Vodka Coke" (`true`)
+
+All other combinations default to `false` and don't need to be specified.
+
+## Making Changes
 
 ### ✅ Add a New Mixer
 ```json
@@ -88,7 +128,6 @@ This automatically updates: Tom Collins, Rum Collins, Whiskey Collins, Vodka Col
     "sprite": {  // NEW!
       "name": "Sprite",
       "description": "Lemon-lime and bubbly",
-      "price": 1,
       "ingredients": ["Sprite"],
       "terminal": true
     }
@@ -104,7 +143,6 @@ Instantly available for all 4 spirits! No need to edit gin, rum, whiskey, vodka 
   "chambord": {  // NEW!
     "name": "Chambord",
     "description": "Raspberry liqueur",
-    "price": 2,
     "ingredients": ["Chambord"],
     "terminal": true,
     "isSpecial": true
@@ -169,11 +207,14 @@ const cocktailData = resolveReferences(rawCocktailData);
 
 ## Benefits
 
-✅ **Single Source of Truth** - Update price once, changes everywhere
-✅ **No Copy-Paste Errors** - Can't have different prices in different places
+✅ **Single Source of Truth** - Update once, changes everywhere
+✅ **No Copy-Paste Errors** - Can't have inconsistent definitions in different places
 ✅ **Easy to Add Content** - New mixer/liqueur available to all spirits instantly
 ✅ **Smaller File** - Less duplication = easier to read
 ✅ **Safe Refactoring** - Change common option, all drinks update consistently
+✅ **Self-Documenting** - Each drink carries its own metadata (name, whether it's known, whether it's special)
+✅ **No Separate Arrays** - The `namedDrinks` array has been eliminated; UI checks `knownName` directly
+✅ **Flexible Overrides** - Each spirit can have different metadata for the same base option (e.g., Gin & Tonic vs Rum & Tonic)
 
 ## Backup
 
@@ -189,9 +230,7 @@ Let's say you get Elderflower liqueur:
   "elderflower": {
     "name": "Elderflower",
     "description": "Floral and sweet elderflower notes",
-    "price": 2,
     "ingredients": ["St-Germain"],
-    "terminal": true,
     "isSpecial": true
   }
 }
@@ -203,10 +242,12 @@ Let's say you get Elderflower liqueur:
 "elderflower": {
   "_ref": "liqueurs.elderflower",
   "drinkName": "Elderflower Gimlet",
+  "knownName": false,  // Not a classic cocktail name
   "options": {
     "sodaWater": {
       "_ref": "commonOptions.sodaWater",
-      "drinkName": "Elderflower Collins"
+      "drinkName": "Elderflower Collins",
+      "knownName": false
     }
   }
 }
@@ -214,17 +255,12 @@ Let's say you get Elderflower liqueur:
 // In vodka
 "elderflower": {
   "_ref": "liqueurs.elderflower",
-  "drinkName": "Vodka Elderflower"
+  "drinkName": "Vodka Elderflower",
+  "knownName": false
 }
 ```
 
-3. **Add to namedDrinks:**
-```json
-{ "name": "Elderflower Gimlet", "path": ["gin", "sugarCitrus", "liqueur", "elderflower"] },
-{ "name": "Vodka Elderflower", "path": ["vodka", "sugarCitrus", "liqueur", "elderflower"] }
-```
-
-Done! The liqueur definition is in one place, referenced everywhere.
+Done! The liqueur definition is in one place, referenced everywhere, and each drink carries its own metadata.
 
 ---
 

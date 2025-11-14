@@ -22,12 +22,27 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
   const [isMenuSpecial, setIsMenuSpecial] = useState(false);
   const [showSparkle, setShowSparkle] = useState(false);
 
-  // Check if current path matches a named drink
-  function checkNamedDrink(path: string[]): boolean {
-    return cocktailData.namedDrinks.some(drink =>
-      drink.path.length === path.length &&
-      drink.path.every((step, index) => step === path[index])
-    );
+  // Check if current option has knownName flag
+  function checkNamedDrink(): boolean {
+    if (!state) return false;
+
+    const currentOptions = getCurrentOptions();
+    if (!currentOptions || Object.keys(currentOptions).length > 0) {
+      // Not at a terminal node yet, check the current state
+      const spirit = cocktailData.baseSpirits[state.spirit];
+      let currentOption: any = spirit;
+
+      for (let i = 1; i < state.path.length; i++) {
+        const optionKey = state.path[i];
+        if (currentOption.options && currentOption.options[optionKey]) {
+          currentOption = currentOption.options[optionKey];
+        }
+      }
+
+      return currentOption.knownName === true;
+    }
+
+    return false;
   }
 
   // Check if current path matches a menu special item
@@ -42,7 +57,7 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
   // Update named drink and menu special status when state changes
   useEffect(() => {
     if (state) {
-      const isNamed = checkNamedDrink(state.path);
+      const isNamed = checkNamedDrink();
       const isSpecial = checkMenuSpecial(state.path);
       setIsNamedDrink(isNamed);
       setIsMenuSpecial(isSpecial);
@@ -56,7 +71,7 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
       setIsMenuSpecial(false);
       setShowSparkle(false);
     }
-  }, [state, cocktailData.namedDrinks, cocktailData.menuItems]);
+  }, [state, cocktailData.menuItems]);
 
   function navigateToPath(path: string[]): BuilderState | null {
     const spiritKey = path[0];
@@ -66,7 +81,6 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
 
     let currentName = spirit.name;
     let ingredients = [...spirit.ingredients];
-    let totalPrice = spirit.price;
 
     let currentOptions = spirit.options;
 
@@ -83,7 +97,6 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
       }
 
       ingredients = [...ingredients, ...option.ingredients];
-      totalPrice += option.price;
 
       if (option.options) {
         currentOptions = option.options;
@@ -94,8 +107,7 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
       spirit: spiritKey,
       path: [...path],
       currentName,
-      ingredients,
-      totalPrice
+      ingredients
     };
   }
 
@@ -105,8 +117,7 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
       spirit: spiritKey,
       path: [spiritKey],
       currentName: spirit.name,
-      ingredients: [...spirit.ingredients],
-      totalPrice: spirit.price
+      ingredients: [...spirit.ingredients]
     };
     setState(newState);
     setHistory([]);
@@ -142,8 +153,7 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
       ...state,
       path: [...state.path, optionKey],
       currentName: option.drinkName || option.finalDrink || state.currentName,
-      ingredients: [...state.ingredients, ...option.ingredients],
-      totalPrice: state.totalPrice + option.price
+      ingredients: [...state.ingredients, ...option.ingredients]
     };
 
     setHistory([...history, state]);
@@ -223,12 +233,6 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
                   ))}
                 </div>
               </div>
-
-              <div className="text-center pt-4 border-t border-slate-700">
-                <span className="text-5xl font-bold text-amber-500">
-                  ${state.totalPrice.toFixed(2)}
-                </span>
-              </div>
             </div>
 
             <div className="flex gap-4">
@@ -299,7 +303,7 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
                   {isMenuSpecial && showSparkle && (
                     <>
                       <Star className="w-4 h-4 text-purple-300 fill-purple-300 absolute -top-1 -right-1 animate-ping" />
-                      <Star className="w-3 h-3 text-purple-200 fill-purple-200 absolute -bottom-1 -left-1 animate-bounce" />
+                      <Star className="w-3 h-3 text-purple-200 fill-purple-200 absolute -bottom-1 -left-1 animate-bounce-complete-special" />
                     </>
                   )}
                 </div>
@@ -307,7 +311,7 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
             </div>
             {isMenuSpecial ? (
               <div className={`mb-4 transition-all duration-500 ${
-                showSparkle ? 'animate-bounce' : ''
+                showSparkle ? 'animate-bounce-complete-special' : ''
               }`}>
                 <p className="text-purple-400 text-sm italic font-semibold">
                   ⭐ You've created a House Special! ⭐
@@ -317,35 +321,26 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
                 </p>
               </div>
             ) : isNamedDrink ? (
-              <p className="text-amber-400 text-sm mb-4 italic">
+              <p className={`text-amber-400 text-sm mb-4 italic ${
+                showSparkle ? 'animate-bounce-complete' : ''
+              }`}>
                 ✨ You've created a named cocktail!
               </p>
             ) : null}
 
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2">
-                  Ingredients
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {state.ingredients.map((ingredient, idx) => (
-                    <span
-                      key={idx}
-                      className="bg-slate-700 text-slate-300 px-3 py-1 rounded-full text-sm"
-                    >
-                      {ingredient}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="text-right">
-                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2">
-                  Current Price
-                </h3>
-                <span className="text-3xl font-bold text-amber-500">
-                  ${state.totalPrice.toFixed(2)}
-                </span>
+            <div>
+              <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-2">
+                Ingredients
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {state.ingredients.map((ingredient, idx) => (
+                  <span
+                    key={idx}
+                    className="bg-slate-700 text-slate-300 px-3 py-1 rounded-full text-sm"
+                  >
+                    {ingredient}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
@@ -364,14 +359,9 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
                   onClick={() => selectSpirit(key)}
                   className="bg-slate-700 hover:bg-slate-600 transition-all duration-300 rounded-lg p-6 text-left border border-slate-600 hover:border-amber-500 group"
                 >
-                  <div className="flex justify-between items-center">
-                    <span className="text-xl font-semibold text-white group-hover:text-amber-500 transition-colors">
-                      {spirit.name}
-                    </span>
-                    <span className="text-xl font-bold text-amber-500">
-                      ${spirit.price}
-                    </span>
-                  </div>
+                  <span className="text-xl font-semibold text-white group-hover:text-amber-500 transition-colors">
+                    {spirit.name}
+                  </span>
                 </button>
               ))}
             </div>
@@ -401,11 +391,6 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
                           </p>
                         )}
                       </div>
-                      {option.price > 0 && (
-                        <span className="text-xl font-bold text-amber-500 ml-4">
-                          +${option.price}
-                        </span>
-                      )}
                     </div>
                   </button>
                   {isTerminal && (

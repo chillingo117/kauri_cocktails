@@ -1,3 +1,72 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  /* Custom bounce animation that completes 3 bounces in 2s and ends at rest */
+  @keyframes bounce-complete {
+    0%, 100% {
+      transform: translateY(0);
+      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    16.67% {
+      transform: translateY(-25%);
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+    33.33% {
+      transform: translateY(0);
+      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+      transform: translateY(-15%);
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+    66.67% {
+      transform: translateY(0);
+      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    83.33% {
+      transform: translateY(-8%);
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+  }
+
+  /* Custom bounce animation for special drinks (3s) */
+  @keyframes bounce-complete-special {
+    0%, 100% {
+      transform: translateY(0);
+      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    11.11% {
+      transform: translateY(-25%);
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+    22.22% {
+      transform: translateY(0);
+      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    33.33% {
+      transform: translateY(-15%);
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+    44.44% {
+      transform: translateY(0);
+      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    55.56% {
+      transform: translateY(-8%);
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+    66.67% {
+      transform: translateY(0);
+    }
+  }
+
+  .animate-bounce-complete {
+    animation: bounce-complete 2s ease-in-out;
+  }
+
+  .animate-bounce-complete-special {
+    animation: bounce-complete-special 3s ease-in-out;
+  }
+}

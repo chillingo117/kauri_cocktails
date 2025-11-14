@@ -45,9 +45,6 @@ export default function CocktailMenu({ menuItems, onSelectDrink, onStartBuilder 
                     ))}
                   </div>
                 </div>
-                <span className="text-2xl font-bold text-amber-500 ml-4">
-                  ${item.price}
-                </span>
               </div>
             </button>
           ))}
