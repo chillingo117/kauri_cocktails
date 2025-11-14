@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import CocktailMenu from './components/CocktailMenu';
 import CocktailBuilder from './components/CocktailBuilder';
-import cocktailData from './cocktailData.json';
+import rawCocktailData from './cocktailData.json';
+import { resolveReferences } from './resolveReferences';
 import { CocktailData, MenuItem } from './types';
 
 type View = 'menu' | 'builder';
@@ -10,7 +11,9 @@ function App() {
   const [currentView, setCurrentView] = useState<View>('menu');
   const [selectedPath, setSelectedPath] = useState<string[] | undefined>(undefined);
 
-  const data = cocktailData as CocktailData;
+  // Resolve references in cocktail data
+  const cocktailData = resolveReferences(rawCocktailData as any);
+  const data = cocktailData as unknown as CocktailData;
 
   function handleSelectDrink(item: MenuItem) {
     if (item.path) {
