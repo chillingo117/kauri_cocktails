@@ -15,7 +15,7 @@ export default function CocktailMenu({ menuItems, onSelectDrink, onStartBuilder 
           <div className="flex items-center justify-center mb-4">
             <Wine className="w-12 h-12 text-amber-500" />
           </div>
-          <h1 className="text-5xl font-bold text-white mb-2">Cocktail Menu</h1>
+          <h1 className="text-5xl font-bold text-white mb-2">Kauri Bar</h1>
         </div>
 
         <div className="grid gap-6 mb-8">
