@@ -21,6 +21,7 @@ export interface MenuItem {
   flavorText: string;
   description: string;
   path: string[] | null;
+  category?: string;
   ingredients: string[];
 }
 

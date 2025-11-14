@@ -6,9 +6,10 @@ interface CocktailBuilderProps {
   cocktailData: CocktailData;
   onBack: () => void;
   initialPath?: string[];
+  initialCategory?: string;
 }
 
-export default function CocktailBuilder({ cocktailData, onBack, initialPath }: CocktailBuilderProps) {
+export default function CocktailBuilder({ cocktailData, onBack, initialPath, initialCategory }: CocktailBuilderProps) {
   const [state, setState] = useState<BuilderState | null>(() => {
     if (initialPath && initialPath.length > 0) {
       return navigateToPath(initialPath);
@@ -21,6 +22,7 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
   const [isNamedDrink, setIsNamedDrink] = useState(false);
   const [isMenuSpecial, setIsMenuSpecial] = useState(false);
   const [showSparkle, setShowSparkle] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState<string | undefined>(initialCategory);
 
   // Check if current option has knownName flag
   function checkNamedDrink(): boolean {
@@ -113,14 +115,29 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
 
   function selectSpirit(spiritKey: string) {
     const spirit = cocktailData.baseSpirits[spiritKey];
-    const newState: BuilderState = {
-      spirit: spiritKey,
-      path: [spiritKey],
-      currentName: spirit.name,
-      ingredients: [...spirit.ingredients]
-    };
-    setState(newState);
-    setHistory([]);
+
+    // If a category filter is active, automatically select that option
+    if (categoryFilter && spirit.options[categoryFilter]) {
+      const categoryOption = spirit.options[categoryFilter];
+      const newState: BuilderState = {
+        spirit: spiritKey,
+        path: [spiritKey, categoryFilter],
+        currentName: categoryOption.drinkName || categoryOption.finalDrink || spirit.name,
+        ingredients: [...spirit.ingredients, ...categoryOption.ingredients]
+      };
+      setState(newState);
+      setHistory([]);
+      setCategoryFilter(undefined); // Clear the filter after use
+    } else {
+      const newState: BuilderState = {
+        spirit: spiritKey,
+        path: [spiritKey],
+        currentName: spirit.name,
+        ingredients: [...spirit.ingredients]
+      };
+      setState(newState);
+      setHistory([]);
+    }
   }
 
   function getCurrentOptions(): Record<string, CocktailOption> | null {
@@ -177,6 +194,7 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
     setState(null);
     setHistory([]);
     setShowFinal(false);
+    setCategoryFilter(initialCategory); // Reset to initial category if there was one
   }
 
   if (showFinal && state) {
@@ -314,7 +332,7 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
                 showSparkle ? 'animate-bounce-complete-special' : ''
               }`}>
                 <p className="text-purple-400 text-sm italic font-semibold">
-                  ⭐ You've created a House Special! ⭐
+                  ⭐ A House Special! ⭐
                 </p>
                 <p className="text-purple-300 text-xs mt-1">
                   This signature cocktail is featured on our menu
@@ -324,7 +342,7 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
               <p className={`text-amber-400 text-sm mb-4 italic ${
                 showSparkle ? 'animate-bounce-complete' : ''
               }`}>
-                ✨ You've created a named cocktail!
+                ✨ A named cocktail!
               </p>
             ) : null}
 
@@ -346,30 +364,38 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
           </div>
         )}
 
-        <div className="bg-slate-800 rounded-lg p-8 border border-slate-700">
-          <h3 className="text-2xl font-bold text-white mb-6">
-            {!state ? 'Choose Your Spirit' : 'Next Step'}
-          </h3>
+        {(!state || !isTerminal) && (
+          <div className="bg-slate-800 rounded-lg p-8 border border-slate-700">
+            <h3 className="text-2xl font-bold text-white mb-6">
+              {!state ? (categoryFilter ? 'Choose Your Spirit' : 'Choose Your Spirit') : 'Next Step'}
+            </h3>
+            {categoryFilter && !state && (
+              <p className="text-slate-400 mb-4 text-sm">
+                Select a spirit to make your drink
+              </p>
+            )}
 
-          {!state ? (
-            <div className="grid gap-4">
-              {Object.entries(cocktailData.baseSpirits).map(([key, spirit]) => (
-                <button
-                  key={key}
-                  onClick={() => selectSpirit(key)}
-                  className="bg-slate-700 hover:bg-slate-600 transition-all duration-300 rounded-lg p-6 text-left border border-slate-600 hover:border-amber-500 group"
-                >
-                  <span className="text-xl font-semibold text-white group-hover:text-amber-500 transition-colors">
-                    {spirit.name}
-                  </span>
-                </button>
-              ))}
-            </div>
-          ) : (
-            <div className="grid gap-4">
-              {currentOptions && Object.entries(currentOptions).map(([key, option]) => (
-                <div key={key}>
+            {!state ? (
+              <div className="grid gap-4">
+                {Object.entries(cocktailData.baseSpirits)
+                  .filter(([key, spirit]) => !categoryFilter || spirit.options[categoryFilter])
+                  .map(([key, spirit]) => (
+                    <button
+                      key={key}
+                      onClick={() => selectSpirit(key)}
+                      className="bg-slate-700 hover:bg-slate-600 transition-all duration-300 rounded-lg p-6 text-left border border-slate-600 hover:border-amber-500 group"
+                    >
+                      <span className="text-xl font-semibold text-white group-hover:text-amber-500 transition-colors">
+                        {spirit.name}
+                      </span>
+                    </button>
+                  ))}
+              </div>
+            ) : (
+              <div className="grid gap-4">
+                {currentOptions && Object.entries(currentOptions).map(([key, option]) => (
                   <button
+                    key={key}
                     onClick={() => selectOption(key)}
                     className="w-full bg-slate-700 hover:bg-slate-600 transition-all duration-300 rounded-lg p-6 text-left border border-slate-600 hover:border-amber-500 group"
                   >
@@ -393,19 +419,20 @@ export default function CocktailBuilder({ cocktailData, onBack, initialPath }: C
                       </div>
                     </div>
                   </button>
-                  {isTerminal && (
-                    <button
-                      onClick={() => setShowFinal(true)}
-                      className="w-full mt-2 bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-amber-500/50"
-                    >
-                      Complete Order
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {state && isTerminal && (
+          <button
+            onClick={() => setShowFinal(true)}
+            className="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold px-6 py-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-amber-500/50 text-lg"
+          >
+            Complete Order
+          </button>
+        )}
       </div>
     </div>
   );
